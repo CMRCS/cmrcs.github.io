@@ -1,0 +1,19 @@
+# Static configuration for the site
+#
+# Values in this file are meant to be constant and rarely edited.
+# These parameters can be accessed in HTML via `{{ site.title }}` etc.
+# Changes to this file are NOT automatically picked up by `jekyll serve`.
+
+# Site settings
+title: CMRCS
+description: >
+  Write an awesome description for your new site here. You can edit this
+  line in _config.yml. It will appear in your document head meta (for
+  Google search results) and in your feed.xml site description.
+
+# Hosting settings
+url: https://cmrcs.github.io/
+
+# Build settings
+markdown: kramdown
+theme: minima
