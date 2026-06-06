@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ page.description | default: site.description | strip }}">
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" href="{{ '/' | relative_url }}">CMRCS</a>
+        <div class="nav-links">
+          <a href="{{ '/research/' | relative_url }}">Research</a>
+          <a href="{{ '/people/' | relative_url }}">People</a>
+          <a href="{{ '/publications/' | relative_url }}">Publications</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      {{ content }}
+    </main>
+
+    <footer>
+      {{ site.footer }}
+    </footer>
+  </body>
+</html>

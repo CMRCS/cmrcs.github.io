@@ -1,6 +1,8 @@
 ---
-title: CMR Computational Simulations
+title: Home
 layout: home
 ---
 
-This is the home page.
+## This is a heading
+
+This is a section.
