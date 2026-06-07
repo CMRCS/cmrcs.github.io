@@ -1,0 +1,26 @@
+# Static configuration for the site
+#
+# Values in this file are meant to be constant and rarely edited.
+# These parameters can be accessed in HTML via `{{ site.title }}` etc.
+# Changes to this file are NOT automatically picked up by `jekyll serve`.
+
+# Site settings
+title: CMRCS
+description: >
+  Cardiovascular Magnetic Resonance Computational Simulations
+footer: >
+  CMRCS · Cardiovascular MR Computational Simulations
+
+# Hosting settings
+url: https://cmrcs.org
+
+# Build settings
+markdown: kramdown
+theme: minima
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - Makefile
+  - README.md
+  - scripts
