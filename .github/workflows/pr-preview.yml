@@ -1,0 +1,62 @@
+# Build the Jekyll site off a PR, then push the artifacts to the gh-pages branch under a pr-preview/pr-# path.
+name: Create PR Preview
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: gh-pages-branch
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Configure Pages runtime environment with all dependencies
+        uses: actions/configure-pages@v5
+
+      - name: Build the site with Jekyll (unless on Close)
+        if: github.event.action != 'closed'
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Push to the pr-preview/pr-# folder
+        id: preview-step
+        if: github.event.action != 'closed'
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./_site/
+          preview-branch: gh-pages
+          wait-for-pages-deployment: true
+
+      - name: Remove the pr-preview/pr-# folder
+        id: preview-remove
+        if: github.event.action == 'closed'
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          action: remove
+          preview-branch: gh-pages
+
+      - name: Add the preview URL to the action summary
+        if: github.event.action != 'closed' && steps.preview-step.outputs.preview-url != ''
+        run: |
+          {
+            echo "### PR preview"
+            echo
+            echo "${{ steps.preview-step.outputs.preview-url }}"
+          } >> "${GITHUB_STEP_SUMMARY}"

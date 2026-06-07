@@ -1,0 +1,67 @@
+# Build the Jekyll site off main, then push the artifacts to the gh-pages branch.
+name: Publish Jekyll to gh-pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages-branch
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Configure Pages runtime environment with all dependencies
+        uses: actions/configure-pages@v5
+
+      - name: Build the site with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Push artifacts to gh-pages
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          worktree="$(mktemp -d)"
+
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages
+            git worktree add "${worktree}" FETCH_HEAD
+          else
+            git worktree add --detach "${worktree}"
+            git -C "${worktree}" switch --orphan gh-pages
+            git -C "${worktree}" rm -rf . >/dev/null 2>&1 || true
+          fi
+
+          find "${worktree}" -mindepth 1 -maxdepth 1 \
+            ! -name .git \
+            ! -name pr-preview \
+            -exec rm -rf {} +
+
+          cp -a _site/. "${worktree}/"
+          touch "${worktree}/.nojekyll"
+
+          git -C "${worktree}" add -A
+
+          if git -C "${worktree}" diff --cached --quiet; then
+            echo "No site changes to publish."
+            exit 0
+          fi
+
+          git -C "${worktree}" commit -m "Deploy main site"
+          git -C "${worktree}" push origin "HEAD:gh-pages"
