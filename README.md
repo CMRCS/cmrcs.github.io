@@ -11,7 +11,8 @@ make build
 make serve
 ```
 
-This will rebuild the site, then serves `_site` at `http://localhost:4000`.
+This will start Jekyll in watch mode and serve the site at
+`http://localhost:4000`. Content changes are rebuilt automatically.
 
 Useful overrides:
 

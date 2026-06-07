@@ -18,6 +18,7 @@ url: https://cmrcs.org
 markdown: kramdown
 theme: minima
 
+# Files to not copy to _site/ (dotfiles are excluded by default)
 exclude:
   - Gemfile
   - Gemfile.lock
