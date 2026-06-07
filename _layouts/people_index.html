@@ -1,0 +1,24 @@
+---
+layout: site
+---
+
+<section class="page-wrap">
+  <div class="page-heading">
+    <h1 class="page-title">{{ page.title }}</h1>
+    <div>{{ content }}</div>
+  </div>
+
+  <div class="people-grid">
+    {% for person in site.data.people %}
+      <article class="person-card">
+        <img src="{{ person.image | relative_url }}" alt="Profile image for {{ person.name }}">
+        <div class="person-card-body">
+          <p class="role">{{ person.role }}</p>
+          <h2>{{ person.name }}</h2>
+          <p>{{ person.summary }}</p>
+          <a class="text-link" href="{{ '/people/' | append: person.id | append: '/' | relative_url }}">View profile</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>

@@ -16,55 +16,53 @@ if ! command -v docker >/dev/null 2>&1; then
 fi
 
 rm -rf "${repo_root}/${destination_dir#./}"
-config_path="${repo_root}/${source_dir#./}/_config.yml"
-config_backup="$(mktemp)"
 
-if [ ! -f "${config_path}" ]; then
-  echo "Cannot find Jekyll config at ${config_path}" >&2
+if [ ! -f "${repo_root}/${source_dir#./}/_config.yml" ]; then
+  echo "Cannot find Jekyll config at ${repo_root}/${source_dir#./}/_config.yml" >&2
   exit 1
 fi
-
-cp "${config_path}" "${config_backup}"
-
-cleanup() {
-  cp "${config_backup}" "${config_path}"
-  rm -f "${config_backup}"
-}
-
-trap cleanup EXIT
-
-{
-  echo
-  printf 'baseurl: "%s"\n' "${local_baseurl}"
-} >> "${config_path}"
-
-docker run --rm \
-  --platform "${platform}" \
-  --volume "${repo_root}:/github/workspace" \
-  --workdir /github/workspace \
-  --env GITHUB_WORKSPACE=/github/workspace \
-  --env GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-CMRCS/cmrcs.github.io}" \
-  --env GITHUB_API_URL="${GITHUB_API_URL:-https://api.github.com}" \
-  --env INPUT_SOURCE="${source_dir}" \
-  --env INPUT_DESTINATION="${destination_dir}" \
-  --env INPUT_FUTURE="${PAGES_FUTURE:-false}" \
-  --env INPUT_BUILD_REVISION="${build_revision}" \
-  --env INPUT_VERBOSE="${PAGES_VERBOSE:-true}" \
-  --env INPUT_TOKEN="${GITHUB_TOKEN:-}" \
-  --entrypoint bash \
-  "${image}" \
-  -lc '
-    /entrypoint.sh
-  '
-
-cleanup
-trap - EXIT
 
 docker run --rm \
   --platform "${platform}" \
   --publish "${port}:${port}" \
   --volume "${repo_root}:/github/workspace" \
   --workdir /github/workspace \
-  --entrypoint ruby \
+  --env GITHUB_WORKSPACE=/github/workspace \
+  --env GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-CMRCS/cmrcs.github.io}" \
+  --env GITHUB_API_URL="${GITHUB_API_URL:-https://api.github.com}" \
+  --env JEKYLL_GITHUB_TOKEN="${GITHUB_TOKEN:-}" \
+  --env JEKYLL_BUILD_REVISION="${build_revision}" \
+  --env PAGES_REPO_NWO="${GITHUB_REPOSITORY:-CMRCS/cmrcs.github.io}" \
+  --env PAGES_API_URL="${GITHUB_API_URL:-https://api.github.com}" \
+  --env PAGES_PORT="${port}" \
+  --env PAGES_SOURCE="${source_dir}" \
+  --env PAGES_DESTINATION="${destination_dir}" \
+  --env PAGES_LOCAL_BASEURL="${local_baseurl}" \
+  --env PAGES_FUTURE="${PAGES_FUTURE:-false}" \
+  --env PAGES_VERBOSE="${PAGES_VERBOSE:-true}" \
+  --env JEKYLL_ENV=development \
+  --entrypoint bash \
   "${image}" \
-  -run -e httpd "${destination_dir#./}" -p "${port}" -b 0.0.0.0
+  -lc '
+    set -euo pipefail
+
+    cd /usr/local/bundle
+
+    args=()
+    if [ "${PAGES_VERBOSE:-true}" = "true" ]; then
+      args+=(--verbose)
+    fi
+    if [ "${PAGES_FUTURE:-false}" = "true" ]; then
+      args+=(--future)
+    fi
+
+    bundle exec jekyll serve \
+      "${args[@]}" \
+      --host 0.0.0.0 \
+      --port "${PAGES_PORT:-4000}" \
+      --source "${GITHUB_WORKSPACE}/${PAGES_SOURCE:-./}" \
+      --destination "${GITHUB_WORKSPACE}/${PAGES_DESTINATION:-./_site}" \
+      --baseurl "${PAGES_LOCAL_BASEURL:-}" \
+      --watch \
+      --force_polling
+  '

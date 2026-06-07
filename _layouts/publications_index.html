@@ -1,0 +1,32 @@
+---
+layout: site
+---
+
+<section class="page-wrap">
+  <div class="page-heading">
+    <h1 class="page-title">{{ page.title }}</h1>
+    <div>{{ content }}</div>
+  </div>
+
+  <div class="publication-list">
+    {% for publication in site.data.publications %}
+      <article class="publication-item">
+        <div>
+          <h2>{{ publication.title }}</h2>
+          <p class="authors">
+            {% for author in publication.authors %}
+              {% if author.person %}
+                {% assign person = site.data.people | where: "id", author.person | first %}
+                <a href="{{ '/people/' | append: person.id | append: '/' | relative_url }}">{{ person.name }}</a>{% unless forloop.last %}, {% endunless %}
+              {% else %}
+                {{ author.name }}{% unless forloop.last %}, {% endunless %}
+              {% endif %}
+            {% endfor %}
+          </p>
+          <a class="text-link" href="{{ '/publications/' | append: publication.id | append: '/' | relative_url }}">Read publication page</a>
+        </div>
+        <div class="year">{{ publication.year }}</div>
+      </article>
+    {% endfor %}
+  </div>
+</section>

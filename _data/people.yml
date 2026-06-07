@@ -1,0 +1,27 @@
+- id: andrew-scott
+  name: Andrew D. Scott
+  image:
+  summary:
+  role:
+  focus:
+  orcid: 0000-0001-7656-3123
+  linkedin: scottandrewd
+  webpage: https://profiles.imperial.ac.uk/andrew.scott
+- id: denis-doorly
+  name: Denis J. Doorly
+  image:
+  summary:
+  role:
+  focus:
+  orcid: Orcid identifier0000-0002-5372-4702
+  linkedin:
+  webpage: https://profiles.imperial.ac.uk/d.doorly
+- id: jan-rose
+  name: Jan N. Rose
+  image:
+  summary: Completed his PhD in 2021, working on realistic histology-based DT-CMR simulation using Monte Carlo methods.
+  role: Alumn
+  focus: Cardiac microstructure, Monte Carlo modelling
+  orcid: 0000-0002-2273-7439
+  linkedin: janniklasrose
+  github: janniklasrose
