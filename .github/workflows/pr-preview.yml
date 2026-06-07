@@ -50,7 +50,7 @@ jobs:
         with:
           source-dir: ./_site/
           preview-branch: gh-pages
-          pages-base-url: https://cmrcs.org
+          pages-base-url: cmrcs.org
           wait-for-pages-deployment: true
 
       - name: Remove the pr-preview/pr-# folder
@@ -60,7 +60,7 @@ jobs:
         with:
           action: remove
           preview-branch: gh-pages
-          pages-base-url: https://cmrcs.org
+          pages-base-url: cmrcs.org
 
       - name: Add the preview URL to the action summary
         if: github.event.action != 'closed' && steps.preview-step.outputs.preview-url != ''
