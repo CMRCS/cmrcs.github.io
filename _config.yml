@@ -17,3 +17,10 @@ url: https://cmrcs.org
 # Build settings
 markdown: kramdown
 theme: minima
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - Makefile
+  - README.md
+  - scripts
