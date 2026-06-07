@@ -54,6 +54,7 @@ jobs:
             -exec rm -rf {} +
 
           cp -a _site/. "${worktree}/"
+          cp CNAME "${worktree}/CNAME"
           touch "${worktree}/.nojekyll"
 
           git -C "${worktree}" add -A
