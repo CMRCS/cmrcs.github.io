@@ -12,7 +12,7 @@ footer: >
   CMRCS · Cardiovascular MR Computational Simulations
 
 # Hosting settings
-url: https://cmrcs.github.io/
+url: https://cmrcs.org
 
 # Build settings
 markdown: kramdown
